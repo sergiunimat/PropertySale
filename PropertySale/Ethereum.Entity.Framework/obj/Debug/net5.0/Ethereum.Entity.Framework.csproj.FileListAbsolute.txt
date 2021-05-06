@@ -1,0 +1,15 @@
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\bin\Debug\net5.0\Ethereum.Entity.Framework.deps.json
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\bin\Debug\net5.0\Ethereum.Entity.Framework.runtimeconfig.json
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\bin\Debug\net5.0\Ethereum.Entity.Framework.runtimeconfig.dev.json
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\bin\Debug\net5.0\Ethereum.Entity.Framework.dll
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\bin\Debug\net5.0\ref\Ethereum.Entity.Framework.dll
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\bin\Debug\net5.0\Ethereum.Entity.Framework.pdb
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.csproj.AssemblyReference.cache
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.AssemblyInfoInputs.cache
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.AssemblyInfo.cs
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.csproj.CoreCompileInputs.cache
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.dll
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\ref\Ethereum.Entity.Framework.dll
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.pdb
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\Ethereum.Entity.Framework\obj\Debug\net5.0\Ethereum.Entity.Framework.genruntimeconfig.cache

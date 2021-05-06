@@ -4,4 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Ethereum.Entity.Framework\Ethereum.Entity.Framework.csproj" />
+  </ItemGroup>
+
 </Project>
