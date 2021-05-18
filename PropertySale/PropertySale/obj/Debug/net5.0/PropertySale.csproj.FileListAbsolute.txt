@@ -86,3 +86,5 @@ C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\PropertySale\obj
 C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\PropertySale\obj\Debug\net5.0\ref\PropertySale.dll
 C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\PropertySale\obj\Debug\net5.0\PropertySale.pdb
 C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\PropertySale\obj\Debug\net5.0\PropertySale.genruntimeconfig.cache
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\PropertySale\bin\Debug\net5.0\Humanizer.dll
+C:\Users\nimat\Documents\TeamProjects\PropertySale\PropertySale\PropertySale\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll

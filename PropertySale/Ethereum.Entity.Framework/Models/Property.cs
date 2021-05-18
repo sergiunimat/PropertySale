@@ -12,7 +12,7 @@ namespace Ethereum.Entity.Framework.Models
     {
         [Key]
         public string Id { get; set; }
-        public BigInteger wei { get; set; }
+        public string Ether { get; set; }
         public string OwnerPublicAddress { get; set; }        
         public string Description { get; set; }
         public string GeographicalAddress { get; set; }
