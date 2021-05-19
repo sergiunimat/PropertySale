@@ -1,3 +1,4 @@
+using Ethereum.Entity.Framework;
 using Ethereum.Entity.Framework.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace PropertySale
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddBFEDServiceInterfaceMapping();
             services.AddDbContextPool<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
