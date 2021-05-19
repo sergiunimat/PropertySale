@@ -20,5 +20,9 @@ namespace Ethereum.Entity.Framework.Interfaces
         Task<List<Property>> GetAllPropertiesAsync();
         Task AddEventAsync(Event incommingEvent);
         Task<List<Event>> GetAllEventsAsync();
+        Task AddSmartContractAsync(SmartContract smartContract);
+        Task<SmartContract> GetSmartContractBasedOnIdAsync(int id);
+        Task AddExternalProjectAsync(ExternalProject externalProject);
+        Task<ExternalProject> GetExternalProjectByIdAsync(int id);
     }
 }

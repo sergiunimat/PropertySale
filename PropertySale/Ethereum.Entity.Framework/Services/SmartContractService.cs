@@ -10,5 +10,8 @@ namespace Ethereum.Entity.Framework.Services
     public class SmartContractService: ISmartContractService
     {
         /*Service-class responsible for interacting with nethereum*/
+
+        #region connection type
+        #endregion
     }
 }

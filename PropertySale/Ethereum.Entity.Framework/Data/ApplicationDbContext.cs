@@ -18,5 +18,7 @@ namespace Ethereum.Entity.Framework.Data
         public DbSet<Property> Properties { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<ExternalProject> ExternalProjects{ get; set; }
+        public DbSet<SmartContract> SmartContracts{ get; set; }
     }
 }

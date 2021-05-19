@@ -101,5 +101,29 @@ namespace Ethereum.Entity.Framework.Services
            return await _ctx.Events.ToListAsync();
         }
         #endregion
+
+        #region Smart Contract related serivces
+        public async Task AddSmartContractAsync(SmartContract smartContract) {
+            await _ctx.AddAsync(smartContract);
+            await _ctx.SaveChangesAsync();
+        }
+
+        public async Task<SmartContract> GetSmartContractBasedOnIdAsync(int id) {
+            return await _ctx.SmartContracts.FirstOrDefaultAsync(s => s.Id == id);
+        }
+        #endregion
+
+        #region External Projects related services
+
+        public async Task AddExternalProjectAsync(ExternalProject externalProject) {
+            await _ctx.ExternalProjects.AddAsync(externalProject);
+            await _ctx.SaveChangesAsync();
+        }
+
+        public async Task<ExternalProject> GetExternalProjectByIdAsync(int id){
+            return await _ctx.ExternalProjects.FirstOrDefaultAsync(e=>e.Id==id);
+        }
+
+        #endregion
     }
 }

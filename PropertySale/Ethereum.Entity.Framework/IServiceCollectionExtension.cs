@@ -14,6 +14,7 @@ namespace Ethereum.Entity.Framework
         public static IServiceCollection AddBFEDServiceInterfaceMapping(this IServiceCollection services)
         {
             services.AddTransient<IDatabaseService, DatabaseService>();            
+            services.AddTransient<ISmartContractService, SmartContractService>();            
             return services;
         }
     }
