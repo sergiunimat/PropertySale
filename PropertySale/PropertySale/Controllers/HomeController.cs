@@ -16,12 +16,14 @@ namespace PropertySale.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IDatabaseService _databaseService;
         private readonly ISmartContractService _smartContractService;
+        private readonly IBlockchainEntityFrameworkService _blockchainEntityFrameworkService;
 
-        public HomeController(ILogger<HomeController> logger, IDatabaseService databaseService, ISmartContractService smartContractService)
+        public HomeController(ILogger<HomeController> logger, IDatabaseService databaseService, ISmartContractService smartContractService, IBlockchainEntityFrameworkService blockchainEntityFrameworkService)
         {
             _logger = logger;
             _databaseService = databaseService;
             _smartContractService = smartContractService;
+            _blockchainEntityFrameworkService = blockchainEntityFrameworkService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -83,7 +85,16 @@ namespace PropertySale.Controllers
             /*Deploy the project*/
             //await _smartContractService.DeployPropertySaleContractAsync("8f5370e51350f2c3b2a34a79c9b7e4f5d6899a02ae7db3d47feadee532073c38");
             #endregion
-
+            var publicUserAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7";
+            var propertyExampleObject = new Property() {
+                Id = "1",//this is a value that we will test!!
+                Description = "this property is a testing property and it has dummy values",
+                Ether = "2",
+                GeographicalAddress = "Death Start Cell 77",
+                OwnerPublicAddress = publicUserAddress
+            };
+            var result = await _blockchainEntityFrameworkService.AddProperty(publicUserAddress, propertyExampleObject);
+            var a = result;
             return View();
         }
 

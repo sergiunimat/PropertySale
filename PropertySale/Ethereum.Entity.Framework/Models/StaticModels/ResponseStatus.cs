@@ -9,5 +9,6 @@ namespace Ethereum.Entity.Framework.Models.StaticModels
     public class ResponseStatus
     {
         public static string SUCCESS = "SUCCESS";
+        public static string FAIL = "FAIL";
     }
 }

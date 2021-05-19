@@ -15,6 +15,7 @@ namespace Ethereum.Entity.Framework
         {
             services.AddTransient<IDatabaseService, DatabaseService>();            
             services.AddTransient<ISmartContractService, SmartContractService>();            
+            services.AddTransient<IBlockchainEntityFrameworkService, BlockchainEntityFrameworkService>();            
             return services;
         }
     }
