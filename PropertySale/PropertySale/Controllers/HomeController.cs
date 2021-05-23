@@ -85,7 +85,10 @@ namespace PropertySale.Controllers
             /*Deploy the project*/
             //await _smartContractService.DeployPropertySaleContractAsync("8f5370e51350f2c3b2a34a79c9b7e4f5d6899a02ae7db3d47feadee532073c38");
             #endregion
+
+            /* MOCKING WHAT COMES FROM FRONT END*/
             var publicUserAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7";
+            var publicUserAddressII = "0x338CCd662EB8E8c647710f99F4B8fDdf0Ec1887C";
             var propertyExampleObject = new Property() {
                 Id = "1",//this is a value that we will test!!
                 Description = "this property is a testing property and it has dummy values",
@@ -93,8 +96,18 @@ namespace PropertySale.Controllers
                 GeographicalAddress = "Death Start Cell 77",
                 OwnerPublicAddress = publicUserAddress
             };
-            var result = await _blockchainEntityFrameworkService.AddProperty(publicUserAddress, propertyExampleObject);
-            var a = result;
+            var propertyExampleObjectII = new Property()
+            {
+                Id = "3",//this is a value that we will test!!
+                Description = "this property is a testing property and it has dummy values",
+                Ether = "2",
+                GeographicalAddress = "Death Start Cell 77",
+                OwnerPublicAddress = publicUserAddressII
+            };
+            //var result = await _blockchainEntityFrameworkService.AddProperty(publicUserAddress, propertyExampleObject);
+            var resultb = await _blockchainEntityFrameworkService.AddProperty(publicUserAddressII, propertyExampleObjectII);
+            //var a = result;
+            var b = resultb;
             return View();
         }
 
