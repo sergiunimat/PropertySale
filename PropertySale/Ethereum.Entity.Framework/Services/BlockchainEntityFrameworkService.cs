@@ -1,5 +1,9 @@
-﻿using Ethereum.Entity.Framework.Interfaces;
+﻿using Ethereum.Entity.Framework.FrameworkDataAnnotations;
+using Ethereum.Entity.Framework.FrameworkDataAnnotations.EstatePropertyAnnotations;
+using Ethereum.Entity.Framework.FrameworkDataAnnotations.UserAnnotations;
+using Ethereum.Entity.Framework.Interfaces;
 using Ethereum.Entity.Framework.Models;
+using Ethereum.Entity.Framework.Models.DTO;
 using Ethereum.Entity.Framework.Models.StaticModels;
 using System;
 using System.Collections.Generic;
@@ -13,11 +17,13 @@ namespace Ethereum.Entity.Framework.Services
     {
         private readonly IDatabaseService _databaseService;
         private readonly ISmartContractService _smartContractService;
+        private readonly IReflextionService _reflextionService;
 
-        public BlockchainEntityFrameworkService(IDatabaseService databaseService,ISmartContractService smartContractService)
+        public BlockchainEntityFrameworkService(IDatabaseService databaseService,ISmartContractService smartContractService, IReflextionService reflextionService)
         {
             _databaseService = databaseService;
             _smartContractService = smartContractService;
+            _reflextionService = reflextionService;
         }
 
         public async Task<string> AddProperty(string publicUserAccount,Property property) {
@@ -41,5 +47,11 @@ namespace Ethereum.Entity.Framework.Services
             }
             
         }
+
+        public void TestMe<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I:new()
+        {
+            var buildResult = _reflextionService.BuildInternalDTO(estatePropertyItem, frameworkUserItem);
+        }
+        
     }
 }

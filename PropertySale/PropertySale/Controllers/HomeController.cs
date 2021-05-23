@@ -104,10 +104,29 @@ namespace PropertySale.Controllers
                 GeographicalAddress = "Death Start Cell 77",
                 OwnerPublicAddress = publicUserAddressII
             };
-            //var result = await _blockchainEntityFrameworkService.AddProperty(publicUserAddress, propertyExampleObject);
-            var resultb = await _blockchainEntityFrameworkService.AddProperty(publicUserAddressII, propertyExampleObjectII);
-            //var a = result;
-            var b = resultb;
+            ////var result = await _blockchainEntityFrameworkService.AddProperty(publicUserAddress, propertyExampleObject);
+            //var resultb = await _blockchainEntityFrameworkService.AddProperty(publicUserAddressII, propertyExampleObjectII);
+            ////var a = result;
+            //var b = resultb;
+            var externalUser = new ApplicationSideUser()
+            {
+                ExternalUserEmail="test@mail.com",
+                ExternalUserEther="1",
+                ExternalUserFullName="test user",
+                ExternalUserPrivateAddress = "UNKNOWN",
+                ExternalUserPublicAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7",
+                ExternalUserType = 0,
+                ExternalUserUserId = 1                
+            };
+            var externalEstateProperty = new ApplicationSideEstateProperty() { 
+                AdditionalExternalAppProperty = "additional data",
+                EstatePropertyDescription = "external obj description",
+                EstatePropertyEther = "1",
+                EstatePropertyGeoAddress = "The moon",
+                EstatePropertyId = "777",
+                EstatePropertyOwnerAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7"
+            };
+            _blockchainEntityFrameworkService.TestMe(externalEstateProperty, externalUser);
             return View();
         }
 
