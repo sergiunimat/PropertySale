@@ -62,7 +62,8 @@ namespace Ethereum.Entity.Framework.Services
         public async Task EditPropertyAsync(Property property)
         {
             var propertyToEdit = await _ctx.Properties.FirstOrDefaultAsync(p => p.Id == property.Id);
-            propertyToEdit = property;
+            propertyToEdit.Ether = property.Ether;            
+            _ctx.Entry(propertyToEdit).CurrentValues.SetValues(property);
             await _ctx.SaveChangesAsync();
         }
 

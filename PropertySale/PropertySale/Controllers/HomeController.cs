@@ -108,25 +108,49 @@ namespace PropertySale.Controllers
             //var resultb = await _blockchainEntityFrameworkService.AddProperty(publicUserAddressII, propertyExampleObjectII);
             ////var a = result;
             //var b = resultb;
+
+
+            //var owner = new User()
+            //{                
+            //    Ether="1",
+            //    Email="owner.mail@mail.com",
+            //    FullName = "Property Sale Ltd.",
+            //    Type = 1,
+            //    PublicAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7",
+            //    PrivateAddress= "8f5370e51350f2c3b2a34a79c9b7e4f5d6899a02ae7db3d47feadee532073c38"
+            //};
             var externalUser = new ApplicationSideUser()
             {
-                ExternalUserEmail="test@mail.com",
+                ExternalUserEmail= "chewbacca@mail.com",
                 ExternalUserEther="1",
-                ExternalUserFullName="test user",
-                ExternalUserPrivateAddress = "UNKNOWN",
-                ExternalUserPublicAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7",
+                ExternalUserFullName= "Chewbacca",
+                ExternalUserPrivateAddress = "93bf9fcbf3f0931f4f254313b3abda7bab4eb0775bec178facfda2f6d5ee1584",
+                ExternalUserPublicAddress = "0x114Cb4183C66cBBd38864EaD3014Dd2c6648c32C",
                 ExternalUserType = 0,
-                ExternalUserUserId = 1                
+                //ExternalUserUserId = 1                
+            };
+            var externalUserOwner = new ApplicationSideUser()
+            {
+                ExternalUserEmail = "owner.mail@mail.com",
+                ExternalUserEther = "1",
+                ExternalUserFullName = "Property Sale Ltd.",
+                ExternalUserPrivateAddress = "8f5370e51350f2c3b2a34a79c9b7e4f5d6899a02ae7db3d47feadee532073c38",
+                ExternalUserPublicAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7",
+                ExternalUserType = 1,
+                //ExternalUserUserId = 1                
             };
             var externalEstateProperty = new ApplicationSideEstateProperty() { 
                 AdditionalExternalAppProperty = "additional data",
                 EstatePropertyDescription = "external obj description",
-                EstatePropertyEther = "1",
+                EstatePropertyEther = "0.1",
                 EstatePropertyGeoAddress = "The moon",
-                EstatePropertyId = "777",
-                EstatePropertyOwnerAddress = "0x836A666a4febd5C4BA19a1898e590492A92e97D7"
+                EstatePropertyId = "20",
+                EstatePropertyOwnerAddress = "0x114Cb4183C66cBBd38864EaD3014Dd2c6648c32C"
             };
-            _blockchainEntityFrameworkService.TestMe(externalEstateProperty, externalUser);
+            //_blockchainEntityFrameworkService.TestMe(externalEstateProperty, externalUser);
+            //var response = await _blockchainEntityFrameworkService.AddEstateProperty(externalEstateProperty, externalUserOwner);
+            //var response = await _blockchainEntityFrameworkService.EditEstateProperty(externalEstateProperty, externalUserOwner);
+            var response = await _blockchainEntityFrameworkService.DeleteEstateProperty(externalEstateProperty, externalUserOwner);
             return View();
         }
 

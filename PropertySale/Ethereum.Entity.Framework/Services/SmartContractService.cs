@@ -92,6 +92,47 @@ namespace Ethereum.Entity.Framework.Services
             }
         }
 
+        public async Task<string> EditPropertyOnChain(string accountPrivate, Property propertyObj) {
+            var web3 = await InitialiseConnectionWithSenderAddress(accountPrivate);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _editPropertyInstance = new EditPropertyPrice()
+            {
+                propertyId = propertyObj.Id,
+                weiPrice = Web3.Convert.ToWei(propertyObj.Ether)
+            };
+
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractTransactionHandler<EditPropertyPrice>();
+                var transactionReceipt = await _interfaceHandler.SendRequestAndWaitForReceiptAsync(smartContract.Address, _editPropertyInstance);
+                return ResponseStatus.SUCCESS;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> DeletePropertyOnChain(string accountPrivate, Property propertyObj)
+        {
+            var web3 = await InitialiseConnectionWithSenderAddress(accountPrivate);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _deletePropertyInstance = new DeleteProperty()
+            {
+                propertyId = propertyObj.Id,                
+            };
+
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractTransactionHandler<DeleteProperty>();
+                var transactionReceipt = await _interfaceHandler.SendRequestAndWaitForReceiptAsync(smartContract.Address, _deletePropertyInstance);
+                return ResponseStatus.SUCCESS;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
 
         #endregion 
     }

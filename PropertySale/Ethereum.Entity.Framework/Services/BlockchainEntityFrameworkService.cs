@@ -26,6 +26,7 @@ namespace Ethereum.Entity.Framework.Services
             _reflextionService = reflextionService;
         }
 
+        /*dont use this fn()!*/
         public async Task<string> AddProperty(string publicUserAccount,Property property) {
             /*
              1. add to blockchain if succed then add to db
@@ -48,6 +49,73 @@ namespace Ethereum.Entity.Framework.Services
             
         }
 
+        public async Task<string> AddEstateProperty<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new()
+        {
+            var DTO = _reflextionService.BuildInternalDTO(estatePropertyItem, frameworkUserItem);
+            if (DTO.ErrorMessage != ResponseStatus.SUCCESS)
+                return DTO.ErrorMessage;
+            try
+            {
+                var user = await _databaseService.GetUserByPublicAddressAsync(DTO.User.PublicAddress);
+                var chainResponse = await _smartContractService.AddPropertyToChainAsync(user.PrivateAddress, DTO.Property);
+                if (chainResponse == ResponseStatus.SUCCESS)
+                {
+                    await _databaseService.AddPropertyAsync(DTO.Property);
+                    return ResponseStatus.SUCCESS;
+                }
+                return chainResponse;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> EditEstateProperty<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new()
+        {
+            var DTO = _reflextionService.BuildInternalDTO(estatePropertyItem, frameworkUserItem);
+            if (DTO.ErrorMessage != ResponseStatus.SUCCESS)
+                return DTO.ErrorMessage;
+            try
+            {
+                var user = await _databaseService.GetUserByPublicAddressAsync(DTO.User.PublicAddress);
+                var chainResponse = await _smartContractService.EditPropertyOnChain(user.PrivateAddress, DTO.Property);
+                if (chainResponse == ResponseStatus.SUCCESS)
+                {
+                    await _databaseService.EditPropertyAsync(DTO.Property);
+                    return ResponseStatus.SUCCESS;
+                }
+                return chainResponse;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> DeleteEstateProperty<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new()
+        {
+            var DTO = _reflextionService.BuildInternalDTO(estatePropertyItem, frameworkUserItem);
+            if (DTO.ErrorMessage != ResponseStatus.SUCCESS)
+                return DTO.ErrorMessage;
+            try
+            {
+                var user = await _databaseService.GetUserByPublicAddressAsync(DTO.User.PublicAddress);
+                var chainResponse = await _smartContractService.DeletePropertyOnChain(user.PrivateAddress, DTO.Property);
+                if (chainResponse == ResponseStatus.SUCCESS)
+                {
+                    await _databaseService.RemovePropertyAsync(DTO.Property.Id);
+                    return ResponseStatus.SUCCESS;
+                }
+                return chainResponse;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        /*dont use this fn()!*/
         public void TestMe<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I:new()
         {
             var buildResult = _reflextionService.BuildInternalDTO(estatePropertyItem, frameworkUserItem);

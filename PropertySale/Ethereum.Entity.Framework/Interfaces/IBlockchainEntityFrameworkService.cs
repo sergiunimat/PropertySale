@@ -10,7 +10,9 @@ namespace Ethereum.Entity.Framework.Interfaces
     public interface IBlockchainEntityFrameworkService
     {
         Task<string> AddProperty(string publicUserAccount, Property property);
-        //void TestMe<T>(T estatePropertyItem) where T : new();
+        Task<string> AddEstateProperty<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
+        Task<string> EditEstateProperty<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
+        Task<string> DeleteEstateProperty<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
         void TestMe<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
     }
 }

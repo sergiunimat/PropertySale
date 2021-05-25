@@ -11,5 +11,7 @@ namespace Ethereum.Entity.Framework.Interfaces
     {
         Task DeployPropertySaleContractAsync(string deployerPrivateAccount);
         Task<string> AddPropertyToChainAsync(string accountPrivate, Property propertyObj);
+        Task<string> EditPropertyOnChain(string accountPrivate, Property propertyObj);
+        Task<string> DeletePropertyOnChain(string accountPrivate, Property propertyObj);
     }
 }
