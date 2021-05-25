@@ -13,5 +13,11 @@ namespace Ethereum.Entity.Framework.Interfaces
         Task<string> AddPropertyToChainAsync(string accountPrivate, Property propertyObj);
         Task<string> EditPropertyOnChain(string accountPrivate, Property propertyObj);
         Task<string> DeletePropertyOnChain(string accountPrivate, Property propertyObj);
+        Task<string> CheckIfAddressIsOwnerByEstateAccount(Property propertyObj);
+        Task<string> CheckIfPropertyExistsAndisOwnedByTheSeller(string sellerPublicAddress, Property propertyObj);
+        Task<string> GetArrayOfProperties();
+        Task<string> GetOwnerAddress();
+        Task<string> GetPropertyWeiPriceByid(Property propertyObj);
+        Task<string> TransferProperty(string accountPrivateSeller, Property propertyObj, string accountPublicBuyer);
     }
 }

@@ -4,6 +4,7 @@ using Ethereum.Entity.Framework.Models.StaticModels;
 using Ethereum.Entity.Framework.SmartContracts.PropertySaleContract;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using Org.BouncyCastle.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,6 +135,137 @@ namespace Ethereum.Entity.Framework.Services
             }
         }
 
+        public async Task<string> CheckIfAddressIsOwnerByEstateAccount(Property propertyObj) 
+        {
+
+            var web3 = await InitialiseSimpleConnection();            
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _checkIfAddressIsOwnedByOwnerAccount = new CheckIfAddressIsOwnedByOwnerAccount() {
+                propertyId = propertyObj.Id
+            };
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractQueryHandler<CheckIfAddressIsOwnedByOwnerAccount>();
+                var transactionReceipt = await _interfaceHandler.QueryAsync<bool>(smartContract.Address,_checkIfAddressIsOwnedByOwnerAccount);
+                if(transactionReceipt==true)
+                    return ResponseStatus.SUCCESS;
+                return ResponseStatus.FAIL;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> CheckIfPropertyExistsAndisOwnedByTheSeller(string sellerPublicAddress,Property propertyObj)
+        {
+
+            var web3 = await InitialiseSimpleConnection();
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var checkIfPropertyExistsAndisOwnedByTheSellerInstance = new CheckIfPropertyExistsAndisOwnedByTheSeller()
+            {
+                propertyId = propertyObj.Id,
+                sellerAddress = sellerPublicAddress
+            };
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractQueryHandler<CheckIfPropertyExistsAndisOwnedByTheSeller>();
+                var transactionReceipt = await _interfaceHandler.QueryAsync<bool>(smartContract.Address, checkIfPropertyExistsAndisOwnedByTheSellerInstance);
+                if (transactionReceipt == true)
+                    return ResponseStatus.SUCCESS;
+                return ResponseStatus.FAIL;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> GetArrayOfProperties()
+        {
+
+            var web3 = await InitialiseSimpleConnection();
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _getArrayOfPropertiesInstance = new GetArrayOfProperties() { };
+            
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractQueryHandler<GetArrayOfProperties>();
+                var transactionReceipt = await _interfaceHandler.QueryAsync<string>(smartContract.Address, _getArrayOfPropertiesInstance);
+                if (transactionReceipt != "" || transactionReceipt != null)
+                    return transactionReceipt;
+                return ResponseStatus.FAIL;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> GetOwnerAddress()
+        {
+
+            var web3 = await InitialiseSimpleConnection();
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _getOwnerAddressInstance = new GetOwnerAddress() { };
+
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractQueryHandler<GetOwnerAddress>();
+                var transactionReceipt = await _interfaceHandler.QueryAsync<string>(smartContract.Address, _getOwnerAddressInstance);
+                if (transactionReceipt != "" || transactionReceipt != null)
+                    return transactionReceipt;
+                return ResponseStatus.FAIL;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> GetPropertyWeiPriceByid(Property propertyObj)
+        {
+
+            var web3 = await InitialiseSimpleConnection();
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _getPropertyWeiPriceByidInstance = new GetPropertyWeiPriceByid() { 
+                propertyId = propertyObj.Id
+            };
+
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractQueryHandler<GetPropertyWeiPriceByid>();
+                var transactionReceipt = await _interfaceHandler.QueryAsync<BigInteger>(smartContract.Address, _getPropertyWeiPriceByidInstance);
+                if ( transactionReceipt != null)
+                    return transactionReceipt.ToString();
+                return ResponseStatus.FAIL;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public async Task<string> TransferProperty(string accountPrivateSeller, Property propertyObj,string accountPublicBuyer)
+        {            
+            var web3 = await InitialiseConnectionWithSenderAddress(accountPrivateSeller);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var _transferPropertyInstance = new TransferProperty()
+            {
+                propertyId = propertyObj.Id,
+                to=accountPublicBuyer
+            };
+            try
+            {
+                var _interfaceHandler = web3.Eth.GetContractTransactionHandler<TransferProperty>();
+                var transactionReceipt = await _interfaceHandler.SendRequestAndWaitForReceiptAsync(smartContract.Address, _transferPropertyInstance);
+                return ResponseStatus.SUCCESS;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
         #endregion 
     }
 }
