@@ -164,7 +164,7 @@ namespace PropertySale.Controllers
             //var response = await _blockchainEntityFrameworkService.AddEstateProperty(externalEstateProperty, externalUserOwner);
             //var response = await _blockchainEntityFrameworkService.EditEstateProperty(externalEstateProperty, ownerUser);
             //var response = await _blockchainEntityFrameworkService.AddEstateProperty(externalEstateProperty, ownerUser);
-            var response = await _blockchainEntityFrameworkService.TransferProperty(externalEstateProperty, yodaUser, chewbaccaUser);
+            //var response = await _blockchainEntityFrameworkService.TransferProperty(externalEstateProperty, yodaUser, chewbaccaUser);
 
             return View();
         }

@@ -2,7 +2,26 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    @* view data section *@
+    <div class="col-12">
+        <div class="row">
+            @* users *@
+            <div class="col-4">users</div>
+            @* properties *@
+            <div class="col-4">properties</div>
+            @* events *@
+            <div class="col-4">events</div>
+        </div>
+    </div>
+    @* transfer properties *@
+    <div class="col-12">
+        @*   1. select box for the buyer
+            2. select box for the property*@
+    </div>
+    <div class="col-12">
+        <div>@* message after selectiong *@</div>
+        <button class="btn-success">Transfer</button>
+    </div>
+
 </div>
