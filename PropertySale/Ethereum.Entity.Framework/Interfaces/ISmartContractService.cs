@@ -19,5 +19,6 @@ namespace Ethereum.Entity.Framework.Interfaces
         Task<string> GetOwnerAddress();
         Task<string> GetPropertyWeiPriceByid(Property propertyObj);
         Task<string> TransferProperty(string accountPrivateSeller, Property propertyObj, string accountPublicBuyer);
+        Task<string> TransferEtherFromAccountToAccount(string fromPrivate, string toPublic, string ether);
     }
 }

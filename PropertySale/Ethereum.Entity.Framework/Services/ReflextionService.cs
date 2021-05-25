@@ -93,10 +93,112 @@ namespace Ethereum.Entity.Framework.Services
 
         }
 
-        public User BuildUserObject<T>(T frameworkUser) where T : new()
+        public TransferPropertyDTO BuildInternalTransferPropertyDTO<T,I,Z>(T estatePropertyItem, I frameworkSellerUserItem, Z frameworkBuyerUserItem) where T : new() where I : new() where Z : new()
         {
 
-            return null;
+            var seller = new User();
+            var buyer = new User();
+            var propertyObj = new Property();
+            try
+            {
+                if (estatePropertyItem == null && frameworkSellerUserItem == null && frameworkBuyerUserItem == null)
+                    return new TransferPropertyDTO() { ErrorMessage = "Incoming paramters are set to null" };
+
+                /*handle PROPERTY*/
+                if (estatePropertyItem != null)
+                {
+                    if (estatePropertyItem.GetType().GetCustomAttributesData().Count() <= 0 || estatePropertyItem.GetType().GetCustomAttributesData()[0].AttributeType.Name != typeof(EstateProperty).Name)
+                        return new TransferPropertyDTO() { ErrorMessage = "The external estate propety objec is not decorated with \"[EstateProperty]\" data annotation." };
+
+                    var externalObjectProperties = estatePropertyItem.GetType().GetProperties();
+                    foreach (var externalProperty in externalObjectProperties)
+                    {
+                        var attributes = externalProperty.GetCustomAttributes(false);
+                        foreach (var attribute in attributes)
+                        {
+                            if (attribute.GetType() == typeof(EstatePropertyIdString))
+                                propertyObj.Id = externalProperty.GetValue(estatePropertyItem).ToString();
+                            if (attribute.GetType() == typeof(EstatePropertyDescriptionString))
+                                propertyObj.Description = externalProperty.GetValue(estatePropertyItem).ToString();
+                            if (attribute.GetType() == typeof(EstatePropertyEtherString))
+                                propertyObj.Ether = externalProperty.GetValue(estatePropertyItem).ToString();
+                            if (attribute.GetType() == typeof(EstatePropertyOwnerPublicAddressString))
+                                propertyObj.OwnerPublicAddress = externalProperty.GetValue(estatePropertyItem).ToString();
+                            if (attribute.GetType() == typeof(EstatePropetyGeographicalAddressString))
+                                propertyObj.GeographicalAddress = externalProperty.GetValue(estatePropertyItem).ToString();
+                        }
+                    }
+                }
+
+                
+                if (frameworkSellerUserItem != null)
+                {
+
+                    if (frameworkSellerUserItem.GetType().GetCustomAttributesData().Count() <= 0 || frameworkSellerUserItem.GetType().GetCustomAttributesData()[0].AttributeType.Name != typeof(FrameworkUser).Name)
+                        return new TransferPropertyDTO() { ErrorMessage = "The external user object is not decorated with \"[FrameworkUser]\" data annotation." };
+
+                    var externalObjectProperties = frameworkSellerUserItem.GetType().GetProperties();
+                    foreach (var externalFrameworkUser in externalObjectProperties)
+                    {
+                        var attributes = externalFrameworkUser.GetCustomAttributes(false);
+                        foreach (var attribute in attributes)
+                        {
+                            if (attribute.GetType() == typeof(FrameworkUserEmailString))
+                                seller.Email = externalFrameworkUser.GetValue(frameworkSellerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserEtherString))
+                                seller.Ether = externalFrameworkUser.GetValue(frameworkSellerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserFullNameString))
+                                seller.FullName = externalFrameworkUser.GetValue(frameworkSellerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserIdInt))
+                                seller.Id = (int)externalFrameworkUser.GetValue(frameworkSellerUserItem);
+                            if (attribute.GetType() == typeof(FrameworkUserPrivateAddressString))
+                                seller.PrivateAddress = externalFrameworkUser.GetValue(frameworkSellerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserPublicAddressString))
+                                seller.PublicAddress = externalFrameworkUser.GetValue(frameworkSellerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserTypeInt))
+                                seller.Type = (int)externalFrameworkUser.GetValue(frameworkSellerUserItem);
+                        }
+                    }
+                }
+
+                if (frameworkBuyerUserItem != null)
+                {
+
+                    if (frameworkBuyerUserItem.GetType().GetCustomAttributesData().Count() <= 0 || frameworkBuyerUserItem.GetType().GetCustomAttributesData()[0].AttributeType.Name != typeof(FrameworkUser).Name)
+                        return new TransferPropertyDTO() { ErrorMessage = "The external user object is not decorated with \"[FrameworkUser]\" data annotation." };
+
+                    var externalObjectProperties = frameworkBuyerUserItem.GetType().GetProperties();
+                    foreach (var externalFrameworkUser in externalObjectProperties)
+                    {
+                        var attributes = externalFrameworkUser.GetCustomAttributes(false);
+                        foreach (var attribute in attributes)
+                        {
+                            if (attribute.GetType() == typeof(FrameworkUserEmailString))
+                                buyer.Email = externalFrameworkUser.GetValue(frameworkBuyerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserEtherString))
+                                buyer.Ether = externalFrameworkUser.GetValue(frameworkBuyerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserFullNameString))
+                                buyer.FullName = externalFrameworkUser.GetValue(frameworkBuyerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserIdInt))
+                                buyer.Id = (int)externalFrameworkUser.GetValue(frameworkBuyerUserItem);
+                            if (attribute.GetType() == typeof(FrameworkUserPrivateAddressString))
+                                buyer.PrivateAddress = externalFrameworkUser.GetValue(frameworkBuyerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserPublicAddressString))
+                                buyer.PublicAddress = externalFrameworkUser.GetValue(frameworkBuyerUserItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkUserTypeInt))
+                                buyer.Type = (int)externalFrameworkUser.GetValue(frameworkBuyerUserItem);
+                        }
+                    }
+                }
+
+                return new TransferPropertyDTO() { Seller = seller, Buyer = buyer, Property = propertyObj, ErrorMessage = ResponseStatus.SUCCESS };
+
+            }
+            catch (Exception e)
+            {
+                return new TransferPropertyDTO() { ErrorMessage = e.Message };
+                throw;
+            }
         }
     }
 }

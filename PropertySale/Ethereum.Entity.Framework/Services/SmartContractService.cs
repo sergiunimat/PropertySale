@@ -266,6 +266,21 @@ namespace Ethereum.Entity.Framework.Services
                 return e.Message;
             }
         }
+
+        public async Task<string> TransferEtherFromAccountToAccount(string fromPrivate, string toPublic, string ether)
+        {
+            var web3 = await InitialiseConnectionWithSenderAddress(fromPrivate);
+            try
+            {
+                var transaction = await web3.Eth.GetEtherTransferService().TransferEtherAndWaitForReceiptAsync(toPublic, Convert.ToDecimal(ether));
+                return ResponseStatus.SUCCESS;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+
+        }
         #endregion 
     }
 }

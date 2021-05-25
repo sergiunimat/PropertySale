@@ -5,6 +5,7 @@ using Ethereum.Entity.Framework.Interfaces;
 using Ethereum.Entity.Framework.Models;
 using Ethereum.Entity.Framework.Models.DTO;
 using Ethereum.Entity.Framework.Models.StaticModels;
+using Nethereum.ABI.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,27 +28,27 @@ namespace Ethereum.Entity.Framework.Services
         }
 
         /*dont use this fn()!*/
-        public async Task<string> AddProperty(string publicUserAccount,Property property) {
-            /*
-             1. add to blockchain if succed then add to db
-             */
-            try
-            {
-                var user = await _databaseService.GetUserByPublicAddressAsync(publicUserAccount);
-                var chainResponse = await _smartContractService.AddPropertyToChainAsync(user.PrivateAddress, property);
-                if (chainResponse==ResponseStatus.SUCCESS)
-                {
-                    await _databaseService.AddPropertyAsync(property);
-                    return ResponseStatus.SUCCESS;
-                }
-                return chainResponse;
-            }
-            catch (Exception e)
-            {
-                return e.Message;
-            }
+        //public async Task<string> AddProperty(string publicUserAccount,Property property) {
+        //    /*
+        //     1. add to blockchain if succed then add to db
+        //     */
+        //    try
+        //    {
+        //        var user = await _databaseService.GetUserByPublicAddressAsync(publicUserAccount);
+        //        var chainResponse = await _smartContractService.AddPropertyToChainAsync(user.PrivateAddress, property);
+        //        if (chainResponse==ResponseStatus.SUCCESS)
+        //        {
+        //            await _databaseService.AddPropertyAsync(property);
+        //            return ResponseStatus.SUCCESS;
+        //        }
+        //        return chainResponse;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return e.Message;
+        //    }
             
-        }
+        //}
 
         public async Task<string> AddEstateProperty<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new()
         {
@@ -115,6 +116,75 @@ namespace Ethereum.Entity.Framework.Services
             }
         }
 
+        public async Task<string> TransferProperty<T,I,Z>(T estatePropertyItem, I frameworkSellerUserItem, Z frameworkBuyerUserItem) where T : new() where I : new() where Z : new()
+        {
+            var DTO = _reflextionService.BuildInternalTransferPropertyDTO(estatePropertyItem, frameworkSellerUserItem, frameworkBuyerUserItem);
+            if (DTO.ErrorMessage != ResponseStatus.SUCCESS)
+                return DTO.ErrorMessage;
+            try
+            {
+                var checkIfPropertyExistAndIsOwnedByTheSeller = await _smartContractService.CheckIfPropertyExistsAndisOwnedByTheSeller(DTO.Seller.PublicAddress,DTO.Property);
+                if (checkIfPropertyExistAndIsOwnedByTheSeller == ResponseStatus.SUCCESS)
+                {
+                    var checkIfPropertyIsOwnedByEstateCompany = await _smartContractService.CheckIfAddressIsOwnerByEstateAccount(DTO.Property);
+                    /*BUY FROM OWNER*/
+                    if (checkIfPropertyIsOwnedByEstateCompany == ResponseStatus.FAIL)
+                    {                        
+                        var ownerAccount = await _smartContractService.GetOwnerAddress();
+
+                        /*  95%  */
+                        var ninentyFive = (0.95 * Convert.ToDouble(DTO.Property.Ether)).ToString();
+                        var etherTransferReceiptToUser = await _smartContractService.TransferEtherFromAccountToAccount(DTO.Buyer.PrivateAddress, DTO.Seller.PublicAddress, ninentyFive);
+                        
+                        /*  5%  */
+                        var five = (0.05 * Convert.ToDouble(DTO.Property.Ether)).ToString();
+                        var etherTransferReceiptToEstateCompany = await _smartContractService.TransferEtherFromAccountToAccount(DTO.Buyer.PrivateAddress, ownerAccount, five);
+                                                
+                        if (etherTransferReceiptToUser == ResponseStatus.SUCCESS && etherTransferReceiptToEstateCompany == ResponseStatus.SUCCESS)
+                        {
+                            var response= await _smartContractService.TransferProperty(DTO.Seller.PrivateAddress, DTO.Property, DTO.Buyer.PublicAddress);
+                            /*change data in the database based on the incoming response from the blockchain.*/
+                            if (response == ResponseStatus.SUCCESS)
+                            {
+                                var newProperty = DTO.Property;
+                                newProperty.OwnerPublicAddress = DTO.Buyer.PublicAddress;
+                                await _databaseService.EditPropertyAsync(newProperty);
+                                return ResponseStatus.SUCCESS;
+                            }
+                            return response;
+                        }
+                        return ResponseStatus.FAIL;//meaning that either one or both transfers failed.
+                    }
+
+                    /*BUY FROM USER*/
+                    if (checkIfPropertyIsOwnedByEstateCompany == ResponseStatus.SUCCESS)
+                    {
+                        /*This is the case where the property is owned by USER - perform 1 transactions.*/
+                        var etherTransferReceipt = await _smartContractService.TransferEtherFromAccountToAccount(DTO.Buyer.PrivateAddress, DTO.Seller.PublicAddress, DTO.Property.Ether);
+                        if (etherTransferReceipt == ResponseStatus.SUCCESS) { 
+                            var response = await _smartContractService.TransferProperty(DTO.Seller.PrivateAddress,DTO.Property,DTO.Buyer.PublicAddress);
+                            if (response==ResponseStatus.SUCCESS)
+                            {
+                                var newProperty = DTO.Property;
+                                newProperty.OwnerPublicAddress = DTO.Buyer.PublicAddress;
+                                await _databaseService.EditPropertyAsync(newProperty);
+                                return ResponseStatus.SUCCESS;
+                            }
+                            return response;
+                        }                        
+                        return etherTransferReceipt;                        
+                    }                    
+                    /*if not successfull, forward-up the error message.*/
+                    return checkIfPropertyIsOwnedByEstateCompany;
+                }
+                /*if not successfull, forward-up the error message.*/
+                return checkIfPropertyExistAndIsOwnedByTheSeller;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
         /*dont use this fn()!*/
         public void TestMe<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I:new()
         {

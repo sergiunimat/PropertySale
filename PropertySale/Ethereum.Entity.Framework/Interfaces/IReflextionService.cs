@@ -10,5 +10,6 @@ namespace Ethereum.Entity.Framework.Interfaces
     public interface IReflextionService
     {
         UserPropertyDTO BuildInternalDTO<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I:new();
+        TransferPropertyDTO BuildInternalTransferPropertyDTO<T, I, Z>(T estatePropertyItem, I frameworkSellerUserItem, Z frameworkBuyerUserItem) where T : new() where I : new() where Z : new();
     }
 }
