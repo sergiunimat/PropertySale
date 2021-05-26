@@ -168,8 +168,8 @@ namespace PropertySale.Controllers
             //var response = await _blockchainEntityFrameworkService.EditEstateProperty(externalEstateProperty, ownerUser);
             //var response = await _blockchainEntityFrameworkService.AddEstateProperty(externalEstateProperty, ownerUser);
             //var response = await _blockchainEntityFrameworkService.TransferProperty(externalEstateProperty, yodaUser, chewbaccaUser);
-            
-            
+
+
             var viewObj = new ViewListsDTO() { 
                 Events = JsonSerializer.Deserialize<List<JSONEvent>>(await _databaseService.JSONGetAllEventsAsync()),
                 Properties = JsonSerializer.Deserialize<List<JSONProperty>>(await _databaseService.JSONGetAllPropertiesAsync()),
@@ -359,6 +359,59 @@ namespace PropertySale.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProperty(ApplicationSideEstateProperty applicationSideEstateProperty) {
+
+            var properyObj = applicationSideEstateProperty;
+            properyObj.EstatePropertyId = Guid.NewGuid().ToString();
+            var appUser = new ApplicationSideUser()
+            {
+                ExternalUserEmail = "",
+                ExternalUserEther = "",
+                ExternalUserFullName = "",
+                ExternalUserPrivateAddress = "",
+                ExternalUserPublicAddress = applicationSideEstateProperty.EstatePropertyOwnerAddress,
+                ExternalUserType = 0,
+                ExternalUserUserId = 0
+            };
+
+            try
+            {
+                var response = await _blockchainEntityFrameworkService.AddEstateProperty(properyObj, appUser);
+                if (response == FrameworkResponseStatus.SUCCESS)
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = "A new estate property was successfully added with the  id (" + properyObj.EstatePropertyId + ").",
+                        TimeStamp = DateTime.Now,
+                        Type = 1,
+                        UserPublicAddress = appUser.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                else
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = response,
+                        TimeStamp = DateTime.Now,
+                        Type = 0,
+                        UserPublicAddress = appUser.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                    return View(IndexAsync());
+                }
+                /*add event in any case!*/
+                return View();
+                //return await IndexAsync();
+            }
+            catch (Exception)
+            {
+                //return await IndexAsync();
+                return View();
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

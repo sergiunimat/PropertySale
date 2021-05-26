@@ -9,7 +9,10 @@
         <p class="fst-italic">Note, this is User Interface was designed to enable users to interact with the framework. </p>
         <p class="fst-italic">This is a DEMO applocation.</p>
     </div>
-    <hr class="mt-4" style="height: 5px; background-color: #000000; border: none; " />
+</div>
+<hr class="mt-4" style="height: 5px; background-color: #000000; border: none; " />
+    <div class="row shadow">
+    
     @* view data section *@
     <div class="col-12">
         <div class="row">
@@ -153,6 +156,73 @@
             </div>
             <div class="col-4">
                 <button id="btnDelete" onclick="deleteProperty()" disabled class="btn btn-danger w-100 ">Delete Property</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col1-2">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Add Real Estate Company
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Real Estate Property</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form asp-controller="Home" asp-action="AddProperty" method="post">
+
+                                @* User *@
+                                <div class="mb-3">
+                                    <label for="EstatePropertyOwnerAddress" class="form-label fw-bold">User</label>
+                                    @*<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">*@
+                                    @* other changes required *@
+                                    <select name="EstatePropertyOwnerAddress" id="EstatePropertyOwnerAddress" class="form-select form-select mb-3" aria-label=".form-select-lg example">
+                                        <option value="" disabled selected>Select User</option>
+                                        @foreach (var u in Model.Users)
+                                        {
+                                            <option value="@u.PublicAddress">@u.FullName</option>
+                                        }
+                                    </select>
+                                    <div id="EstatePropertyOwnerAddressHelper" class="form-text fst-italic">Select the user from the dropdown.</div>
+                                </div>
+
+                                @* Ether *@
+                                <div class="mb-3">
+                                    @*<input onchange="verifyInputEdit()" id="selectEtherEdit" type="text" class="form-control" placeholder="eg. 1.23" aria-label="eg. 2.3" aria-describedby="basic-addon2">*@
+                                    <label for="EstatePropertyEther" class="form-label fw-bold">Ether</label>
+                                    @*<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">*@
+                                    <input id="EstatePropertyEther" name="EstatePropertyEther" type="text" class="form-control" placeholder="eg. 1.23" aria-describedby="basic-addon2">                                    
+                                    <div id="EstatePropertyEtherHelper" class="form-text fst-italic">Enter the value of the estate property in Ether.</div>
+                                </div>
+
+                                @* Geographic address *@
+                                <div class="mb-3">
+                                    <label for="EstatePropertyGeoAddress" class="form-label fw-bold">Geographic Address</label>
+                                    <input type="text" class="form-control" id="EstatePropertyGeoAddress" name="EstatePropertyGeoAddress" aria-describedby="emailHelp">
+                                    <div id="EstatePropertyGeoAddressHelper" class="form-text fst-italic">Enter the Geographic address for the estate property</div>
+                                </div>
+
+                                @* Description *@
+                                <div class="mb-3">
+                                    <label for="EstatePropertyDescription" class="form-label fw-bold">Description</label>
+                                    <input type="text" class="form-control" id="EstatePropertyDescription" name="EstatePropertyDescription" aria-describedby="emailHelp">
+                                    <div id="EstatePropertyDescriptionHelper" class="form-text">Enter the description of the estate property.</div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary ">Submit</button>
+                        </form>
+                    </div>
+                    @*<div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Add</button>
+                    </div>*@
+                </div>
             </div>
         </div>
     </div>
