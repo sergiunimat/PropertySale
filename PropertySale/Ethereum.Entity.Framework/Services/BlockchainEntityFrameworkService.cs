@@ -121,6 +121,8 @@ namespace Ethereum.Entity.Framework.Services
             var DTO = _reflextionService.BuildInternalTransferPropertyDTO(estatePropertyItem, frameworkSellerUserItem, frameworkBuyerUserItem);
             if (DTO.ErrorMessage != ResponseStatus.SUCCESS)
                 return DTO.ErrorMessage;
+            var sellerPrivate = await _databaseService.GetUserByPublicAddressAsync(DTO.Seller.PublicAddress);
+            var buyerPrivate = await _databaseService.GetUserByPublicAddressAsync(DTO.Buyer.PublicAddress);
             try
             {
                 var checkIfPropertyExistAndIsOwnedByTheSeller = await _smartContractService.CheckIfPropertyExistsAndisOwnedByTheSeller(DTO.Seller.PublicAddress,DTO.Property);
@@ -131,18 +133,19 @@ namespace Ethereum.Entity.Framework.Services
                     if (checkIfPropertyIsOwnedByEstateCompany == ResponseStatus.FAIL)
                     {                        
                         var ownerAccount = await _smartContractService.GetOwnerAddress();
+                        var propertyEtherValue = await _smartContractService.GetPropertyEtherPriceByid(DTO.Property);
 
                         /*  95%  */
-                        var ninentyFive = (0.95 * Convert.ToDouble(DTO.Property.Ether)).ToString();
-                        var etherTransferReceiptToUser = await _smartContractService.TransferEtherFromAccountToAccount(DTO.Buyer.PrivateAddress, DTO.Seller.PublicAddress, ninentyFive);
+                        var ninentyFive = (0.95 * Convert.ToDouble(propertyEtherValue)).ToString();
+                        var etherTransferReceiptToUser = await _smartContractService.TransferEtherFromAccountToAccount(buyerPrivate.PrivateAddress, DTO.Seller.PublicAddress, ninentyFive);
                         
                         /*  5%  */
-                        var five = (0.05 * Convert.ToDouble(DTO.Property.Ether)).ToString();
-                        var etherTransferReceiptToEstateCompany = await _smartContractService.TransferEtherFromAccountToAccount(DTO.Buyer.PrivateAddress, ownerAccount, five);
+                        var five = (0.05 * Convert.ToDouble(propertyEtherValue)).ToString();
+                        var etherTransferReceiptToEstateCompany = await _smartContractService.TransferEtherFromAccountToAccount(buyerPrivate.PrivateAddress, ownerAccount, five);
                                                 
                         if (etherTransferReceiptToUser == ResponseStatus.SUCCESS && etherTransferReceiptToEstateCompany == ResponseStatus.SUCCESS)
                         {
-                            var response= await _smartContractService.TransferProperty(DTO.Seller.PrivateAddress, DTO.Property, DTO.Buyer.PublicAddress);
+                            var response= await _smartContractService.TransferProperty(sellerPrivate.PrivateAddress, DTO.Property, DTO.Buyer.PublicAddress);
                             /*change data in the database based on the incoming response from the blockchain.*/
                             if (response == ResponseStatus.SUCCESS)
                             {
@@ -160,9 +163,10 @@ namespace Ethereum.Entity.Framework.Services
                     if (checkIfPropertyIsOwnedByEstateCompany == ResponseStatus.SUCCESS)
                     {
                         /*This is the case where the property is owned by USER - perform 1 transactions.*/
-                        var etherTransferReceipt = await _smartContractService.TransferEtherFromAccountToAccount(DTO.Buyer.PrivateAddress, DTO.Seller.PublicAddress, DTO.Property.Ether);
+                        var propertyEtherValue = await _smartContractService.GetPropertyEtherPriceByid(DTO.Property);
+                        var etherTransferReceipt = await _smartContractService.TransferEtherFromAccountToAccount(buyerPrivate.PrivateAddress, DTO.Seller.PublicAddress, propertyEtherValue);
                         if (etherTransferReceipt == ResponseStatus.SUCCESS) { 
-                            var response = await _smartContractService.TransferProperty(DTO.Seller.PrivateAddress,DTO.Property,DTO.Buyer.PublicAddress);
+                            var response = await _smartContractService.TransferProperty(sellerPrivate.PrivateAddress,DTO.Property,DTO.Buyer.PublicAddress);
                             if (response==ResponseStatus.SUCCESS)
                             {
                                 var newProperty = DTO.Property;
@@ -185,11 +189,19 @@ namespace Ethereum.Entity.Framework.Services
                 return e.Message;
             }
         }
-        /*dont use this fn()!*/
-        public void TestMe<T,I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I:new()
+
+        public async Task AddEvent<T>(T eventItem) where T : new()
         {
-            var buildResult = _reflextionService.BuildInternalDTO(estatePropertyItem, frameworkUserItem);
+            var DTO = _reflextionService.BuildInternalEventDTO(eventItem);
+            try
+            {
+                if (DTO.ErrorMessage == ResponseStatus.SUCCESS)
+                    await _databaseService.AddEventAsync(DTO.Event);
+            }
+            catch (Exception )
+            {
+                throw;
+            }
         }
-        
     }
 }

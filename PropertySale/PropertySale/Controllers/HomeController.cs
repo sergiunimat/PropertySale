@@ -3,10 +3,13 @@ using Ethereum.Entity.Framework.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PropertySale.Models;
+using PropertySale.Models.DTOs;
+using PropertySale.Models.StaticModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PropertySale.Controllers
@@ -165,10 +168,194 @@ namespace PropertySale.Controllers
             //var response = await _blockchainEntityFrameworkService.EditEstateProperty(externalEstateProperty, ownerUser);
             //var response = await _blockchainEntityFrameworkService.AddEstateProperty(externalEstateProperty, ownerUser);
             //var response = await _blockchainEntityFrameworkService.TransferProperty(externalEstateProperty, yodaUser, chewbaccaUser);
+            
+            
+            var viewObj = new ViewListsDTO() { 
+                Events = JsonSerializer.Deserialize<List<JSONEvent>>(await _databaseService.JSONGetAllEventsAsync()),
+                Properties = JsonSerializer.Deserialize<List<JSONProperty>>(await _databaseService.JSONGetAllPropertiesAsync()),
+                Users = JsonSerializer.Deserialize<List<JSONUser>>(await _databaseService.JSONGetAllUsersAsync())
+            };
 
-            return View();
+            return View(viewObj);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> BuyProperty(string buyerPublic,string propertyId, string sellerPublic) {
+            var appUserBuyer = new ApplicationSideUser()
+            {
+                ExternalUserEmail="",
+                ExternalUserEther="",
+                ExternalUserFullName="",
+                ExternalUserPrivateAddress="",
+                ExternalUserPublicAddress = buyerPublic,
+                ExternalUserType=0,
+                ExternalUserUserId=0
+            };
+            var appUserSeller = new ApplicationSideUser()
+            {
+                ExternalUserEmail = "",
+                ExternalUserEther = "",
+                ExternalUserFullName = "",
+                ExternalUserPrivateAddress = "",
+                ExternalUserPublicAddress = sellerPublic,
+                ExternalUserType = 0,
+                ExternalUserUserId = 0
+            };
+            var appProperty = new ApplicationSideEstateProperty() {
+                AdditionalExternalAppProperty="",
+                EstatePropertyDescription="",
+                EstatePropertyEther="",
+                EstatePropertyGeoAddress="",
+                EstatePropertyId = propertyId,
+                EstatePropertyOwnerAddress =""
+            };
+
+            try
+            {
+                var response = await _blockchainEntityFrameworkService.TransferProperty(appProperty, appUserSeller, appUserBuyer);
+                if (response==FrameworkResponseStatus.SUCCESS)
+                {
+                    var applicationEvent = new ApplicationSideEvent() {
+                        Message = "The property was successfully transfered from" + appUserSeller.ExternalUserPublicAddress + " to " + appUserBuyer.ExternalUserPublicAddress,
+                        TimeStamp = DateTime.Now,
+                        Type = 1,
+                        UserPublicAddress = appUserBuyer.ExternalUserPublicAddress                        
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                else
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = response,
+                        TimeStamp = DateTime.Now,
+                        Type = 0,
+                        UserPublicAddress = appUserBuyer.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                /*add event in any case!*/
+                return View(IndexAsync());
+            }
+            catch (Exception)
+            {
+                return View(IndexAsync());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProperty(string buyerPublic, string propertyId,string etherValue)
+        {
+            var appUser = new ApplicationSideUser()
+            {
+                ExternalUserEmail = "",
+                ExternalUserEther = "",
+                ExternalUserFullName = "",
+                ExternalUserPrivateAddress = "",
+                ExternalUserPublicAddress = buyerPublic,
+                ExternalUserType = 0,
+                ExternalUserUserId = 0
+            };
+            var appProperty = new ApplicationSideEstateProperty()
+            {
+                AdditionalExternalAppProperty = "",
+                EstatePropertyDescription = "",
+                EstatePropertyEther = etherValue,
+                EstatePropertyGeoAddress = "",
+                EstatePropertyId = propertyId,
+                EstatePropertyOwnerAddress = ""
+            };
+
+            try
+            {
+                var response = await _blockchainEntityFrameworkService.EditEstateProperty(appProperty, appUser);
+                if (response == FrameworkResponseStatus.SUCCESS)
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = "The property with id ("+appProperty.EstatePropertyId+") was successfully edited.",
+                        TimeStamp = DateTime.Now,
+                        Type = 1,
+                        UserPublicAddress = appUser.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                else
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = response,
+                        TimeStamp = DateTime.Now,
+                        Type = 0,
+                        UserPublicAddress = appUser.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                /*add event in any case!*/
+                return View(IndexAsync());
+            }
+            catch (Exception)
+            {
+                return View(IndexAsync());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProperty(string buyerPublic, string propertyId)
+        {
+            var appUser = new ApplicationSideUser()
+            {
+                ExternalUserEmail = "",
+                ExternalUserEther = "",
+                ExternalUserFullName = "",
+                ExternalUserPrivateAddress = "",
+                ExternalUserPublicAddress = buyerPublic,
+                ExternalUserType = 0,
+                ExternalUserUserId = 0
+            };
+            var appProperty = new ApplicationSideEstateProperty()
+            {
+                AdditionalExternalAppProperty = "",
+                EstatePropertyDescription = "",
+                EstatePropertyEther = "",
+                EstatePropertyGeoAddress = "",
+                EstatePropertyId = propertyId,
+                EstatePropertyOwnerAddress = ""
+            };
+
+            try
+            {
+                var response = await _blockchainEntityFrameworkService.DeleteEstateProperty(appProperty, appUser);
+                if (response == FrameworkResponseStatus.SUCCESS)
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = "The property with id (" + appProperty.EstatePropertyId + ") was successfully edited.",
+                        TimeStamp = DateTime.Now,
+                        Type = 1,
+                        UserPublicAddress = appUser.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                else
+                {
+                    var applicationEvent = new ApplicationSideEvent()
+                    {
+                        Message = response,
+                        TimeStamp = DateTime.Now,
+                        Type = 0,
+                        UserPublicAddress = appUser.ExternalUserPublicAddress
+                    };
+                    await _blockchainEntityFrameworkService.AddEvent(applicationEvent);
+                }
+                /*add event in any case!*/
+                return View(IndexAsync());
+            }
+            catch (Exception)
+            {
+                return View(IndexAsync());
+            }
+        }
         public IActionResult Privacy()
         {
             return View();

@@ -14,6 +14,6 @@ namespace Ethereum.Entity.Framework.Interfaces
         Task<string> EditEstateProperty<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
         Task<string> DeleteEstateProperty<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
         Task<string> TransferProperty<T, I, Z>(T estatePropertyItem, I frameworkSellerUserItem, Z frameworkBuyerUserItem) where T : new() where I : new() where Z : new();
-        void TestMe<T, I>(T estatePropertyItem, I frameworkUserItem) where T : new() where I : new();
+        Task AddEvent<T>(T eventItem) where T : new();
     }
 }

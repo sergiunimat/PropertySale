@@ -1,27 +1,248 @@
-﻿@{
+﻿@model PropertySale.Models.DTOs.ViewListsDTO
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="row">
+    <div class="col-12">
+        <p class="fst-italic">Note, this is User Interface was designed to enable users to interact with the framework. </p>
+        <p class="fst-italic">This is a DEMO applocation.</p>
+    </div>
+    <hr class="mt-4" style="height: 5px; background-color: #000000; border: none; " />
     @* view data section *@
     <div class="col-12">
         <div class="row">
             @* users *@
-            <div class="col-4">users</div>
+            <div style="max-height:350px; overflow-y:auto" class="col-4 p-0 w-100">
+                <div class="col-12 sticky-top bg-white shadow-sm font-weight-bold">Users</div>
+                @foreach (var user in Model.Users)
+                {
+                    <div style="margin-bottom:5px !important" class="shadow-sm p-3 mb-5 bg-body rounded w-100 mb-1 row">
+                        <div class="col-7 font-weight-bold">Public Address</div>
+                        <div style="font-size:small; background-color:lightgrey" class="col-12 rounded-3">@user.PublicAddress</div>
+                        <div class="col-3 font-weight-bold">Name</div>
+                        <div class="col-9">@user.FullName</div>
+                        <div class="col-3 font-weight-bold">Email</div>
+                        <div class="col-9">@user.Email</div>
+                        <div class="col-3 font-weight-bold">Ether</div>
+                        <div class="col-9">@user.Ether</div>
+                    </div>
+                }
+            </div>
             @* properties *@
-            <div class="col-4">properties</div>
+            <div style="max-height:350px; overflow-y:auto" class="col-4 p-0 w-100">
+                <div class="col-12 sticky-top bg-white shadow-sm font-weight-bold">Estate Properties</div>
+                @foreach (var estate in Model.Properties)
+                {
+                    <div style="margin-bottom:5px !important" class="shadow-sm p-3 mb-5 bg-body rounded w-100 mb-1 row">
+                        <div class="col-5 font-weight-bold">Description</div>
+                        <div class="col-12">@estate.Description</div>
+                        <div class="col-5 font-weight-bold">Location</div>
+                        <div class="col-12">@estate.GeographicalAddress</div>
+                        <div class="col-5 font-weight-bold">Price</div>
+                        <div class="col-12">@estate.Ether ETH</div>
+                    </div>
+                }
+            </div>
             @* events *@
-            <div class="col-4">events</div>
+            <div style="max-height:350px; overflow-y:auto" class="col-4 p-0 w-100">
+                <div class="col-12 sticky-top bg-white shadow-sm font-weight-bold">Notifications</div>
+                @foreach (var ev in Model.Events)
+                {
+                    <div style="margin-bottom:5px !important" class="shadow-sm p-3 mb-5 bg-body rounded w-100 mb-1 row">
+                        <div class="col-3 font-weight-bold">User</div>
+                        <div class="col-9">@ev.UserName</div>
+                        <div class="col-3 font-weight-bold">Date</div>
+                        <div class="col-9">@ev.TimeStamp</div>
+                        <div class="col-7 font-weight-bold">Context</div>
+                        <div style="font-size:small; background-color:lightgrey" class="col-12 rounded-3">@ev.Message</div>
+                        @*<div class="col-3 font-weight-bold">Ether</div>
+                            <div class="col-9">@ev.</div>*@
+                    </div>
+                }
+            </div>
         </div>
     </div>
-    @* transfer properties *@
-    <div class="col-12">
-        @*   1. select box for the buyer
-            2. select box for the property*@
     </div>
+<hr class="mt-4 mb-4" style="height: 5px; background-color: #000000; border: none; " />
+    <div class="row shadow pt-4 pb-4">
+    
+    @* transfer properties *@
+
     <div class="col-12">
-        <div>@* message after selectiong *@</div>
-        <button class="btn-success">Transfer</button>
+        <div class="row">
+            <div class="col-4">
+                <select onchange="verifyInput()" id="selectUser" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option value="" disabled selected>Select User</option>
+                    @foreach (var u in Model.Users)
+                    {
+                        <option value="@u.PublicAddress">@u.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-4">
+                <select onchange="verifyInput()" id="selectProperty" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option value="" disabled selected>Select Estate</option>
+                    @foreach (var e in Model.Properties)
+                    {
+                        <option value="@e.Id @e.OwnerPublicAddress">@e.GeographicalAddress - @e.Ether ETH</option>
+                    }
+                </select>
+            </div>
+            <div class="col-4">
+                <button id="btnPurchase" onclick="buyProperty()" disabled class="btn btn-success w-100 ">Purchase Property</button>
+            </div>
+        </div>
     </div>
 
+    @* Edit property fields *@
+
+    <div class="col-12">
+        <div class="row">
+            <div class="col-3">
+                <select onchange="verifyInputEdit()" id="selectUserEdit" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option value="" disabled selected>Select User</option>
+                    @foreach (var u in Model.Users)
+                    {
+                        <option value="@u.PublicAddress">@u.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-3">
+                <select onchange="verifyInputEdit()" id="selectPropertyEdit" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option value="" disabled selected>Select Estate</option>
+                    @foreach (var e in Model.Properties)
+                    {
+                        <option value="@e.Id">@e.GeographicalAddress - @e.Ether ETH</option>
+                    }
+                </select>
+            </div>
+            <div class="col-2">
+                <div class="input-group mb-3">
+                    <input onchange="verifyInputEdit()" id="selectEtherEdit" type="text" class="form-control" placeholder="eg. 1.23" aria-label="eg. 2.3" aria-describedby="basic-addon2">
+                    <span class="input-group-text" id="basic-addon2">ETH</span>
+                </div>
+            </div>
+            <div class="col-4">
+                <button id="btnEdit" onclick="editProperty()" disabled class="btn btn-success w-100 ">Edit Property</button>
+            </div>
+        </div>
+    </div>
+
+    @* Delete Property fields *@
+    <div class="col-12">
+        <div class="row">
+            <div class="col-4">
+                <select onchange="verifyInputDelete()" id="selectUserDelete" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option value="" disabled selected>Select User</option>
+                    @foreach (var u in Model.Users)
+                    {
+                        <option value="@u.PublicAddress">@u.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-4">
+                <select onchange="verifyInputDelete()" id="selectPropertyDelete" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option value="" disabled selected>Select Estate</option>
+                    @foreach (var e in Model.Properties)
+                    {
+                        <option value="@e.Id">@e.GeographicalAddress - @e.Ether ETH</option>
+                    }
+                </select>
+            </div>
+            <div class="col-4">
+                <button id="btnDelete" onclick="deleteProperty()" disabled class="btn btn-danger w-100 ">Delete Property</button>
+            </div>
+        </div>
+    </div>
+    <!--<div class="col-12">
+        <div>-->@* message after selectiong *@<!--</div>
+        <button class="btn-success">Transfer</button>
+    </div>-->
+
 </div>
+
+<script>
+    /* Buy property */
+    const verifyInput = () => {        
+        ($("#selectUser option:selected").val() != '' && $("#selectProperty option:selected").val() != '') ?
+            $("#btnPurchase").prop("disabled", false) : $("#btnPurchase").prop("disabled", true);
+    };
+    const buyProperty = () => {
+        const url = "/Home/BuyProperty";
+        var propertyData = $("#selectProperty option:selected").val().split(' ');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                buyerPublic: $("#selectUser option:selected").val(),
+                propertyId: propertyData[0],
+                sellerPublic: propertyData[1]
+            },
+            dataType: "text",
+            success: function (msg) {
+                console.log(msg);
+            },
+            error: function (req, status, error) {
+                console.log(error);
+            }
+        });
+    };
+
+    /*Edit Property */
+    const verifyInputEdit = () => {
+        //selectEtherEdit
+
+        ($("#selectUserEdit option:selected").val() != '' && $("#selectPropertyEdit option:selected").val() != '' && $("#selectEtherEdit").val() != '') ?
+            $("#btnEdit").prop("disabled", false) : $("#btnEdit").prop("disabled", true);
+    }
+    const editProperty = () => {
+        const url = "/Home/EditProperty";
+        let buyerPublic = $("#selectUserEdit option:selected").val();
+        let propertyData = $("#selectPropertyEdit option:selected").val();
+        let etherValue = $("#selectEtherEdit").val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                buyerPublic: buyerPublic,
+                propertyId: propertyData,
+                etherValue: etherValue
+            },
+            dataType: "text",
+            success: function (msg) {
+                console.log(msg);
+            },
+            error: function (req, status, error) {
+                console.log(error);
+            }
+        });
+    };
+
+    /* Edit property */
+    const verifyInputDelete = () => {
+        ($("#selectUserDelete option:selected").val() != '' && $("#selectPropertyDelete option:selected").val() != '') ?
+            $("#btnDelete").prop("disabled", false) : $("#btnDelete").prop("disabled", true);
+    };
+    const deleteProperty = () => {
+        const url = "/Home/DeleteProperty";        
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                buyerPublic: $("#selectUserDelete option:selected").val(),
+                propertyId: $("#selectPropertyDelete option:selected").val(),                
+            },
+            dataType: "text",
+            success: function (msg) {
+                console.log(msg);
+            },
+            error: function (req, status, error) {
+                console.log(error);
+            }
+        });
+    };
+
+
+</script>

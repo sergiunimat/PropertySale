@@ -4,10 +4,11 @@ using Ethereum.Entity.Framework.Models.StaticModels;
 using Ethereum.Entity.Framework.SmartContracts.PropertySaleContract;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using Org.BouncyCastle.Math;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -223,7 +224,7 @@ namespace Ethereum.Entity.Framework.Services
             }
         }
 
-        public async Task<string> GetPropertyWeiPriceByid(Property propertyObj)
+        public async Task<string> GetPropertyEtherPriceByid(Property propertyObj)
         {
 
             var web3 = await InitialiseSimpleConnection();
@@ -236,8 +237,10 @@ namespace Ethereum.Entity.Framework.Services
             {
                 var _interfaceHandler = web3.Eth.GetContractQueryHandler<GetPropertyWeiPriceByid>();
                 var transactionReceipt = await _interfaceHandler.QueryAsync<BigInteger>(smartContract.Address, _getPropertyWeiPriceByidInstance);
-                if ( transactionReceipt != null)
-                    return transactionReceipt.ToString();
+                if (transactionReceipt != 0)                                    
+                    //return transactionReceipt.ToString();
+                    return Web3.Convert.FromWei(transactionReceipt).ToString();
+                
                 return ResponseStatus.FAIL;
             }
             catch (Exception e)

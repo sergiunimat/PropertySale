@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Ethereum.Entity.Framework.Services
@@ -34,6 +35,10 @@ namespace Ethereum.Entity.Framework.Services
 
         public async Task<List<User>> GetAllUsersAsync() {
             return await _ctx.Users.ToListAsync();
+        }
+        public async Task<string> JSONGetAllUsersAsync()
+        {    
+            return JsonSerializer.Serialize(await _ctx.Users.ToListAsync());
         }
 
         public async Task UpdateUserEtherBalanceAsync(string publicAddress,string ether) {
@@ -91,15 +96,41 @@ namespace Ethereum.Entity.Framework.Services
             return await _ctx.Properties.ToListAsync();
         }
 
+        public async Task<string> JSONGetAllPropertiesAsync()
+        {            
+            return JsonSerializer.Serialize(await _ctx.Properties.ToListAsync());
+        }
+
         #endregion
 
         #region Event related services
         public async Task AddEventAsync(Event incommingEvent) {
             await _ctx.Events.AddAsync(incommingEvent);
+            await _ctx.SaveChangesAsync();
         }
 
         public async Task<List<Event>> GetAllEventsAsync() {
            return await _ctx.Events.ToListAsync();
+        }
+
+        public async Task<string> JSONGetAllEventsAsync()
+        {
+            var eventList = await _ctx.Events.ToListAsync();
+            var userList = await GetAllUsersAsync();
+            var frontEndEventList = new List<EventWithUser>();
+            foreach (var e in eventList)
+            {
+                var tempEvent = new EventWithUser()
+                {
+                    Id = e.Id,
+                    Message = e.Message,
+                    TimeStamp = e.TimeStamp,
+                    Type = e.Type,
+                    UserName = userList.FirstOrDefault(u => u.PublicAddress == e.UserPublicAddress).FullName
+                };
+                frontEndEventList.Add(tempEvent);
+            }
+            return JsonSerializer.Serialize(frontEndEventList);
         }
         #endregion
 

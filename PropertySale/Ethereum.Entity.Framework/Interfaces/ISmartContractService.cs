@@ -17,7 +17,7 @@ namespace Ethereum.Entity.Framework.Interfaces
         Task<string> CheckIfPropertyExistsAndisOwnedByTheSeller(string sellerPublicAddress, Property propertyObj);
         Task<string> GetArrayOfProperties();
         Task<string> GetOwnerAddress();
-        Task<string> GetPropertyWeiPriceByid(Property propertyObj);
+        Task<string> GetPropertyEtherPriceByid(Property propertyObj);
         Task<string> TransferProperty(string accountPrivateSeller, Property propertyObj, string accountPublicBuyer);
         Task<string> TransferEtherFromAccountToAccount(string fromPrivate, string toPublic, string ether);
     }

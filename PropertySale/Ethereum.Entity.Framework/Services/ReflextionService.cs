@@ -1,5 +1,6 @@
 ﻿using Ethereum.Entity.Framework.FrameworkDataAnnotations;
 using Ethereum.Entity.Framework.FrameworkDataAnnotations.EstatePropertyAnnotations;
+using Ethereum.Entity.Framework.FrameworkDataAnnotations.EventAnnotations;
 using Ethereum.Entity.Framework.FrameworkDataAnnotations.UserAnnotations;
 using Ethereum.Entity.Framework.Interfaces;
 using Ethereum.Entity.Framework.Models;
@@ -199,6 +200,49 @@ namespace Ethereum.Entity.Framework.Services
                 return new TransferPropertyDTO() { ErrorMessage = e.Message };
                 throw;
             }
+        }
+
+        public EventDTO BuildInternalEventDTO<T>(T eventItem) where T : new()
+        {
+            var eventObj = new Event();
+            
+            try
+            {
+                if (eventItem == null)
+                    return new EventDTO() { ErrorMessage = "Incoming paramters are set to null while converting to internal EventDTO"};
+                
+                if (eventItem != null)
+                {
+                    if (eventItem.GetType().GetCustomAttributesData().Count() <= 0 || eventItem.GetType().GetCustomAttributesData()[0].AttributeType.Name != typeof(FrameworkEvent).Name)
+                        return new EventDTO() { ErrorMessage = "The external event objec is not decorated with \"[FrameworkEvent]\" data annotation." };
+
+                    var externalObjectProperties = eventItem.GetType().GetProperties();
+                    foreach (var externalEvent in externalObjectProperties)
+                    {
+                        var attributes = externalEvent.GetCustomAttributes(false);
+                        foreach (var attribute in attributes)
+                        {
+                            if (attribute.GetType() == typeof(FrameworkEventIdInt))
+                                eventObj.Id = (int) externalEvent.GetValue(eventItem);
+                            if (attribute.GetType() == typeof(FrameworkEventMessageString))
+                                eventObj.Message = externalEvent.GetValue(eventItem).ToString();
+                            if (attribute.GetType() == typeof(FrameworkEventTimeStampDateTime))
+                                eventObj.TimeStamp = (DateTime) externalEvent.GetValue(eventItem);
+                            if (attribute.GetType() == typeof(FrameworkEventTypeInt))
+                                eventObj.Type = (int) externalEvent.GetValue(eventItem);
+                            if (attribute.GetType() == typeof(FrameworkEventUserPublicAddressString))
+                                eventObj.UserPublicAddress = externalEvent.GetValue(eventItem).ToString();
+                        }
+                    }
+                }                            
+                return new EventDTO() { Event=eventObj, ErrorMessage = ResponseStatus.SUCCESS };
+            }
+            catch (Exception e)
+            {
+                return new EventDTO() { ErrorMessage = e.Message };
+                throw;
+            }
+
         }
     }
 }
