@@ -46,6 +46,7 @@ namespace Ethereum.Entity.Framework.Services
                                 propertyObj.Ether = externalProperty.GetValue(estatePropertyItem).ToString();
                             if (attribute.GetType() == typeof(EstatePropertyOwnerPublicAddressString))
                                 propertyObj.OwnerPublicAddress = externalProperty.GetValue(estatePropertyItem).ToString();
+                            //typeof(propertyObj).GetProperties().SetValue(externalProperty.GetValue(estatePropertyItem).ToString());                               
                             if (attribute.GetType() == typeof(EstatePropetyGeographicalAddressString))
                                 propertyObj.GeographicalAddress = externalProperty.GetValue(estatePropertyItem).ToString();
                         }
