@@ -76,7 +76,7 @@ namespace Ethereum.Entity.Framework.Services
             /*get connection*/
             var web3 = await InitialiseConnectionWithSenderAddress(accountPrivate);
             /*get smart contract*/
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);            
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);            
             var _addPropertyInterdace = new AddProperty()
             {
                 propertyId = propertyObj.Id,
@@ -96,7 +96,7 @@ namespace Ethereum.Entity.Framework.Services
 
         public async Task<string> EditPropertyOnChain(string accountPrivate, Property propertyObj) {
             var web3 = await InitialiseConnectionWithSenderAddress(accountPrivate);
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _editPropertyInstance = new EditPropertyPrice()
             {
                 propertyId = propertyObj.Id,
@@ -118,7 +118,7 @@ namespace Ethereum.Entity.Framework.Services
         public async Task<string> DeletePropertyOnChain(string accountPrivate, Property propertyObj)
         {
             var web3 = await InitialiseConnectionWithSenderAddress(accountPrivate);
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _deletePropertyInstance = new DeleteProperty()
             {
                 propertyId = propertyObj.Id,                
@@ -140,7 +140,7 @@ namespace Ethereum.Entity.Framework.Services
         {
 
             var web3 = await InitialiseSimpleConnection();            
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _checkIfAddressIsOwnedByOwnerAccount = new CheckIfAddressIsOwnedByOwnerAccount() {
                 propertyId = propertyObj.Id
             };
@@ -162,7 +162,7 @@ namespace Ethereum.Entity.Framework.Services
         {
 
             var web3 = await InitialiseSimpleConnection();
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var checkIfPropertyExistsAndisOwnedByTheSellerInstance = new CheckIfPropertyExistsAndisOwnedByTheSeller()
             {
                 propertyId = propertyObj.Id,
@@ -186,7 +186,7 @@ namespace Ethereum.Entity.Framework.Services
         {
 
             var web3 = await InitialiseSimpleConnection();
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _getArrayOfPropertiesInstance = new GetArrayOfProperties() { };
             
             try
@@ -207,7 +207,7 @@ namespace Ethereum.Entity.Framework.Services
         {
 
             var web3 = await InitialiseSimpleConnection();
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _getOwnerAddressInstance = new GetOwnerAddress() { };
 
             try
@@ -228,7 +228,7 @@ namespace Ethereum.Entity.Framework.Services
         {
 
             var web3 = await InitialiseSimpleConnection();
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _getPropertyWeiPriceByidInstance = new GetPropertyWeiPriceByid() { 
                 propertyId = propertyObj.Id
             };
@@ -252,7 +252,7 @@ namespace Ethereum.Entity.Framework.Services
         public async Task<string> TransferProperty(string accountPrivateSeller, Property propertyObj,string accountPublicBuyer)
         {            
             var web3 = await InitialiseConnectionWithSenderAddress(accountPrivateSeller);
-            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(1);
+            var smartContract = await _databaseService.GetSmartContractBasedOnIdAsync(2);
             var _transferPropertyInstance = new TransferProperty()
             {
                 propertyId = propertyObj.Id,

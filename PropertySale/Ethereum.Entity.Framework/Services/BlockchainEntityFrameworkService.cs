@@ -129,7 +129,7 @@ namespace Ethereum.Entity.Framework.Services
                 if (checkIfPropertyExistAndIsOwnedByTheSeller == ResponseStatus.SUCCESS)
                 {
                     var checkIfPropertyIsOwnedByEstateCompany = await _smartContractService.CheckIfAddressIsOwnerByEstateAccount(DTO.Property);
-                    /*BUY FROM OWNER*/
+                    /*BUY FROM USER*/
                     if (checkIfPropertyIsOwnedByEstateCompany == ResponseStatus.FAIL)
                     {                        
                         var ownerAccount = await _smartContractService.GetOwnerAddress();
@@ -151,7 +151,7 @@ namespace Ethereum.Entity.Framework.Services
                             {
                                 var newProperty = DTO.Property;
                                 newProperty.OwnerPublicAddress = DTO.Buyer.PublicAddress;
-                                await _databaseService.EditPropertyAsync(newProperty);
+                                await _databaseService.EditTransferPropertyAsync(newProperty);
                                 return ResponseStatus.SUCCESS;
                             }
                             return response;
@@ -159,7 +159,7 @@ namespace Ethereum.Entity.Framework.Services
                         return ResponseStatus.FAIL;//meaning that either one or both transfers failed.
                     }
 
-                    /*BUY FROM USER*/
+                    /*BUY FROM OWNER*/
                     if (checkIfPropertyIsOwnedByEstateCompany == ResponseStatus.SUCCESS)
                     {
                         /*This is the case where the property is owned by USER - perform 1 transactions.*/
@@ -171,7 +171,7 @@ namespace Ethereum.Entity.Framework.Services
                             {
                                 var newProperty = DTO.Property;
                                 newProperty.OwnerPublicAddress = DTO.Buyer.PublicAddress;
-                                await _databaseService.EditPropertyAsync(newProperty);
+                                await _databaseService.EditTransferPropertyAsync(newProperty);
                                 return ResponseStatus.SUCCESS;
                             }
                             return response;

@@ -15,6 +15,7 @@ namespace Ethereum.Entity.Framework.Interfaces
         Task UpdateUserEtherBalanceAsync(string publicAddress, string ether);
         Task AddPropertyAsync(Property property);
         Task EditPropertyAsync(Property property);
+        Task EditTransferPropertyAsync(Property property);
         Task RemovePropertyAsync(string propertyId);
         Task<Property> GetpropertyByPropertyIdAsync(string propertyId);
         Task<List<Property>> GetAllPropertiesAsync();
