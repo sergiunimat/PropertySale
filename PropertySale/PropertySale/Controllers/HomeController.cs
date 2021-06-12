@@ -77,7 +77,7 @@ namespace PropertySale.Controllers
                 if (response==FrameworkResponseStatus.SUCCESS)
                 {
                     var applicationEvent = new ApplicationSideEvent() {
-                        Message = "The property was successfully transfered from" + appUserSeller.ExternalUserPublicAddress + " to " + appUserBuyer.ExternalUserPublicAddress,
+                        Message = "The property was successfully transfered from: " + appUserSeller.ExternalUserPublicAddress + " to: " + appUserBuyer.ExternalUserPublicAddress,
                         TimeStamp = DateTime.Now,
                         Type = 1,
                         UserPublicAddress = appUserBuyer.ExternalUserPublicAddress                        
